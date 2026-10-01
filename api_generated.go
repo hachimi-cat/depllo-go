@@ -452,6 +452,12 @@ func (a *GeneratedAPI) ProjectsGet(ctx context.Context, id string) (json.RawMess
 	return a.c.apigenRequest(ctx, "GET", path, nil, nil)
 }
 
+// ProjectsGetPipelines calls GET /api/v1/projects/{id}/pipelines/{iid}: Get a pipeline.
+func (a *GeneratedAPI) ProjectsGetPipelines(ctx context.Context, id string, iid string) (json.RawMessage, error) {
+	path := "/api/v1/projects/" + url.PathEscape(id) + "/pipelines/" + url.PathEscape(iid)
+	return a.c.apigenRequest(ctx, "GET", path, nil, nil)
+}
+
 // ProjectsList calls GET /api/v1/projects: List projects.
 func (a *GeneratedAPI) ProjectsList(ctx context.Context) (json.RawMessage, error) {
 	return a.c.apigenRequest(ctx, "GET", "/api/v1/projects", nil, nil)
@@ -492,12 +498,6 @@ func (a *GeneratedAPI) ProjectsPipelines(ctx context.Context, id string, p *Proj
 	}
 	path := "/api/v1/projects/" + url.PathEscape(id) + "/pipelines"
 	return a.c.apigenRequest(ctx, "GET", path, q, nil)
-}
-
-// ProjectsPipelines2 calls GET /api/v1/projects/{id}/pipelines/{iid}: Get a pipeline.
-func (a *GeneratedAPI) ProjectsPipelines2(ctx context.Context, id string, iid string) (json.RawMessage, error) {
-	path := "/api/v1/projects/" + url.PathEscape(id) + "/pipelines/" + url.PathEscape(iid)
-	return a.c.apigenRequest(ctx, "GET", path, nil, nil)
 }
 
 // ProjectsPipelinesCancel calls POST /api/v1/projects/{id}/pipelines/{iid}/cancel: Cancel a pipeline.
@@ -728,6 +728,13 @@ func (a *GeneratedAPI) SchedulesUpdate(ctx context.Context, id string, p *Schedu
 // UsageList calls GET /api/v1/usage: List usage.
 func (a *GeneratedAPI) UsageList(ctx context.Context) (json.RawMessage, error) {
 	return a.c.apigenRequest(ctx, "GET", "/api/v1/usage", nil, nil)
+}
+
+// ProjectsPipelines2 is the old name of ProjectsGetPipelines (GET /api/v1/projects/{id}/pipelines/{iid}).
+//
+// Deprecated: use ProjectsGetPipelines.
+func (a *GeneratedAPI) ProjectsPipelines2(ctx context.Context, id string, iid string) (json.RawMessage, error) {
+	return a.ProjectsGetPipelines(ctx, id, iid)
 }
 
 // apigenBody copies Body, so the fields set over it never change the caller's map.
