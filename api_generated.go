@@ -18,7 +18,7 @@ type apigenTransport interface {
 	apigenRequest(ctx context.Context, method, path string, query url.Values, body map[string]any) (json.RawMessage, error)
 }
 
-// GeneratedAPI has all 45 feature routes of the Depllo API, one method each
+// GeneratedAPI has all 54 feature routes of the Depllo API, one method each
 // (generated from the API spec). A method takes the path parameters, then an *<Method>Args
 // with the query fields (tagged query) and the JSON body fields (tagged json): required
 // fields are plain values, optional ones pointers, slices or maps that nil leaves out,
@@ -728,6 +728,160 @@ func (a *GeneratedAPI) SchedulesUpdate(ctx context.Context, id string, p *Schedu
 // UsageList calls GET /api/v1/usage: List usage.
 func (a *GeneratedAPI) UsageList(ctx context.Context) (json.RawMessage, error) {
 	return a.c.apigenRequest(ctx, "GET", "/api/v1/usage", nil, nil)
+}
+
+// WebhookDeliveriesGet calls GET /api/v1/webhook-deliveries/{id}: Get a webhook delivery, with every attempt made at it.
+func (a *GeneratedAPI) WebhookDeliveriesGet(ctx context.Context, id string) (json.RawMessage, error) {
+	path := "/api/v1/webhook-deliveries/" + url.PathEscape(id)
+	return a.c.apigenRequest(ctx, "GET", path, nil, nil)
+}
+
+// WebhookDeliveriesListArgs are the inputs of GeneratedAPI.WebhookDeliveriesList.
+type WebhookDeliveriesListArgs struct {
+	// Limit is "limit" in the query.
+	Limit *int `query:"limit"`
+
+	// Cursor is "cursor" in the query.
+	Cursor *string `query:"cursor"`
+
+	// EndpointID is "endpointId" in the query.
+	EndpointID *string `query:"endpointId"`
+
+	// Status is "status" in the query. One of: pending, succeeded, failed.
+	Status *string `query:"status"`
+
+	// Type is "type" in the query.
+	Type *string `query:"type"`
+}
+
+// WebhookDeliveriesList calls GET /api/v1/webhook-deliveries: List webhook deliveries, newest first: status (pending, succeeded, failed), attempt count, next retry, the body sent and every attempt made (`attemptLog`).
+func (a *GeneratedAPI) WebhookDeliveriesList(ctx context.Context, p *WebhookDeliveriesListArgs) (json.RawMessage, error) {
+	if p == nil {
+		p = &WebhookDeliveriesListArgs{}
+	}
+	q := url.Values{}
+	if p.Limit != nil {
+		q.Set("limit", apigenQueryValue(*p.Limit))
+	}
+	if p.Cursor != nil {
+		q.Set("cursor", apigenQueryValue(*p.Cursor))
+	}
+	if p.EndpointID != nil {
+		q.Set("endpointId", apigenQueryValue(*p.EndpointID))
+	}
+	if p.Status != nil {
+		q.Set("status", apigenQueryValue(*p.Status))
+	}
+	if p.Type != nil {
+		q.Set("type", apigenQueryValue(*p.Type))
+	}
+	return a.c.apigenRequest(ctx, "GET", "/api/v1/webhook-deliveries", q, nil)
+}
+
+// WebhookDeliveriesRetry calls POST /api/v1/webhook-deliveries/{id}/retry: Retry a webhook delivery: one more attempt now at a failed delivery (or send a succeeded one again).
+func (a *GeneratedAPI) WebhookDeliveriesRetry(ctx context.Context, id string) (json.RawMessage, error) {
+	path := "/api/v1/webhook-deliveries/" + url.PathEscape(id) + "/retry"
+	return a.c.apigenRequest(ctx, "POST", path, nil, nil)
+}
+
+// WebhookEndpointsCreateArgs are the inputs of GeneratedAPI.WebhookEndpointsCreate.
+type WebhookEndpointsCreateArgs struct {
+	// URL is "url" in the body, required.
+	URL string `json:"url"`
+
+	// Events is "events" in the body.
+	Events []string `json:"events,omitempty"`
+
+	// Description is "description" in the body.
+	Description *string `json:"description,omitempty"`
+
+	// Body is the whole JSON body, for what the fields above do not cover; the fields
+	// that are set replace its keys.
+	Body map[string]any `json:"-"`
+}
+
+// WebhookEndpointsCreate calls POST /api/v1/webhook-endpoints: Register a webhook endpoint.
+func (a *GeneratedAPI) WebhookEndpointsCreate(ctx context.Context, p *WebhookEndpointsCreateArgs) (json.RawMessage, error) {
+	if p == nil {
+		p = &WebhookEndpointsCreateArgs{}
+	}
+	payload := apigenBody(p.Body)
+	if p.URL != "" {
+		payload["url"] = p.URL
+	}
+	if p.Events != nil {
+		payload["events"] = p.Events
+	}
+	if p.Description != nil {
+		payload["description"] = *p.Description
+	}
+	if _, ok := payload["url"]; !ok {
+		return nil, apigenMissing("WebhookEndpointsCreate", "URL")
+	}
+	return a.c.apigenRequest(ctx, "POST", "/api/v1/webhook-endpoints", nil, payload)
+}
+
+// WebhookEndpointsDelete calls DELETE /api/v1/webhook-endpoints/{id}: Delete a webhook endpoint and its delivery log.
+func (a *GeneratedAPI) WebhookEndpointsDelete(ctx context.Context, id string) (json.RawMessage, error) {
+	path := "/api/v1/webhook-endpoints/" + url.PathEscape(id)
+	return a.c.apigenRequest(ctx, "DELETE", path, nil, nil)
+}
+
+// WebhookEndpointsEventTypes calls GET /api/v1/webhook-endpoints/event-types: The event types an endpoint can subscribe to, with what each reports.
+func (a *GeneratedAPI) WebhookEndpointsEventTypes(ctx context.Context) (json.RawMessage, error) {
+	return a.c.apigenRequest(ctx, "GET", "/api/v1/webhook-endpoints/event-types", nil, nil)
+}
+
+// WebhookEndpointsGet calls GET /api/v1/webhook-endpoints/{id}: Get a webhook endpoint.
+func (a *GeneratedAPI) WebhookEndpointsGet(ctx context.Context, id string) (json.RawMessage, error) {
+	path := "/api/v1/webhook-endpoints/" + url.PathEscape(id)
+	return a.c.apigenRequest(ctx, "GET", path, nil, nil)
+}
+
+// WebhookEndpointsList calls GET /api/v1/webhook-endpoints: List the workspace's webhook endpoints, newest first.
+func (a *GeneratedAPI) WebhookEndpointsList(ctx context.Context) (json.RawMessage, error) {
+	return a.c.apigenRequest(ctx, "GET", "/api/v1/webhook-endpoints", nil, nil)
+}
+
+// WebhookEndpointsUpdateArgs are the inputs of GeneratedAPI.WebhookEndpointsUpdate.
+type WebhookEndpointsUpdateArgs struct {
+	// URL is "url" in the body.
+	URL *string `json:"url,omitempty"`
+
+	// Events is "events" in the body.
+	Events []string `json:"events,omitempty"`
+
+	// Description is "description" in the body.
+	Description *string `json:"description,omitempty"`
+
+	// Active is "active" in the body.
+	Active *bool `json:"active,omitempty"`
+
+	// Body is the whole JSON body, for what the fields above do not cover; the fields
+	// that are set replace its keys.
+	Body map[string]any `json:"-"`
+}
+
+// WebhookEndpointsUpdate calls PATCH /api/v1/webhook-endpoints/{id}: Update a webhook endpoint. `active: false` pauses it (its queued deliveries become failed); `active: true` re-enables it — also after Depllo switched it off for failing — and clears its failure streak.
+func (a *GeneratedAPI) WebhookEndpointsUpdate(ctx context.Context, id string, p *WebhookEndpointsUpdateArgs) (json.RawMessage, error) {
+	if p == nil {
+		p = &WebhookEndpointsUpdateArgs{}
+	}
+	payload := apigenBody(p.Body)
+	if p.URL != nil {
+		payload["url"] = *p.URL
+	}
+	if p.Events != nil {
+		payload["events"] = p.Events
+	}
+	if p.Description != nil {
+		payload["description"] = *p.Description
+	}
+	if p.Active != nil {
+		payload["active"] = *p.Active
+	}
+	path := "/api/v1/webhook-endpoints/" + url.PathEscape(id)
+	return a.c.apigenRequest(ctx, "PATCH", path, nil, payload)
 }
 
 // ProjectsPipelines2 is the old name of ProjectsGetPipelines (GET /api/v1/projects/{id}/pipelines/{iid}).
