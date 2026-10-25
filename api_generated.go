@@ -295,6 +295,9 @@ type ProjectsCreatePipelinesArgs struct {
 	// Ref is "ref" in the body, required.
 	Ref string `json:"ref"`
 
+	// Sha is "sha" in the body.
+	Sha *string `json:"sha,omitempty"`
+
 	// Variables is "variables" in the body.
 	Variables map[string]any `json:"variables,omitempty"`
 
@@ -311,6 +314,9 @@ func (a *GeneratedAPI) ProjectsCreatePipelines(ctx context.Context, id string, p
 	payload := apigenBody(p.Body)
 	if p.Ref != "" {
 		payload["ref"] = p.Ref
+	}
+	if p.Sha != nil {
+		payload["sha"] = *p.Sha
 	}
 	if p.Variables != nil {
 		payload["variables"] = p.Variables
